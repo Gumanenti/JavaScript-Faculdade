@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>Manipulando Datas</title>
+<script type="text/javascript">
+function capturarData(){
+    var dataEscolhida = document.getElementById("digite-data").value;
+    var dataDate = new Date(dataEscolhida);
+    var dia = dataDate.getDate();
+    var mes = dataDate.getMonth();
+    
+    if(mes == 3 && dia == 28){
+        alert("Você está na Golden Week. Bem vindo ao Dia de Showa!!!")
+    }
+    if(mes == 4 && dia == 2){
+        alert("Você está na Golden Week. Bem vindo ao Dia da Constituição!!!")
+    }
+    if(mes == 4 && dia == 3){
+        alert("Você está na Golden Week. Bem vindo ao Dia do Verde!!!")
+    }
+    if(mes == 4 && dia == 4){
+        alert("Você está na Golden Week. Bem vindo ao Dia das Crianças!!!")
+    }
+    if(mes == 3 && dia < 28){
+        alert("Você não está na Golden Week.");
+    }
+    if(mes == 4 && dia > 4){
+        alert("Você não está na Golden Week.");
+    }
+
+
+
+}
+</script>
+</head>
+
+<body>
+    <h1>Digite a data de hoje:</h1>
+    <input type="date" name="data" id="digite-data" min="2022-04-01" max="2022-05-31"><br>
+    <script type="text/javascript">
+    var x = document.getElementById("digite-data").addEventListener("click", capturarData);
+    console.log(x)
+    </script>
+</body>
+
+</html>
