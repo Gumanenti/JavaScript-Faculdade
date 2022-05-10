@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <title>Gustavo Manenti</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+
+        function clicouDeletar(event){
+            console.log("voce clicou no botao excluir");
+            var idBotaoClicado = event;
+            var dadosDeletar = {
+                id: idBotaoClicado,
+            }
+            console.log(idBotaoClicado);
+            urlDeletar = "https://tiagoifsp.ddns.net/noticias/noticias/deletar.php";
+            $.ajax({
+                url: urlDeletar,
+                method: "GET",
+                dataType: "json",
+                data: dadosDeletar,
+                success: function(dados){
+                    console.log("Deu certo deletar");
+                    alert("Você deletou a notícia!");
+                }
+            });
+        }
+
+        function clicouEditar(event){
+            console.log("voce clicou no botao editar");
+            var idBotaoClicado = event;
+            let cabeçalhoEditar = $("<h3>").text("Editar Noticia:");
+            let formulario = "<form id='form-editar'><label for='editarProduto'>Escolher Categoria:</label><select class='form-control' id='categoriaNova'><option>Cultura</option><option>Economia</option><option>Esportes</option><option>Obituario</option><option>Politica</option></select><label for='editarProduto'>Titulo Notícia:</label><input type='text' class='form-control' id='tituloNovo' placeholder='Novo Titulo'><label for='editarProduto'>Subtitulo da Notícia:</label><input type='text' class='form-control' id='subtituloNovo' placeholder='Novo Subtitulo'><label for='editarProduto'>Conteúdo da Noticia:</label><textarea class='form-control' id='conteudoNovo' rows='3' placeholder='Novo Conteudo'></textarea><button class='btn btn-primary'>Cadastrar</button></form>";
+            let conteudoEditar = $("<div>");
+            conteudoEditar.append(cabeçalhoEditar);
+            conteudoEditar.append(formulario);
+            $("#centro").html(conteudoEditar);
+
+            let cultura = "Cultura";
+            let economia = "Economia";
+            let esportes = "Esportes";
+            let obtuario = "Obituario";
+            let politica = "Politica";
+            let novaCategoria = document.querySelector("#categoriaNova");
+            let novoTitulo = document.querySelector("#tituloNovo");
+            let novoSubtitulo = document.querySelector("#subtituloNovo");
+            let novoConteudo = document.querySelector("#conteudoNovo");
+            let formularioEditar = document.querySelector("#form-editar");
+            console.log(novaCategoria, novoTitulo, novoSubtitulo, novoConteudo, formularioEditar);
+
+            formularioEditar.addEventListener("submit", function(event){
+                //let valorNovaCategoria = novaCategoria.value;
+                let valorNovaCategoria = novaCategoria.value;
+                    if(valorNovaCategoria == cultura){
+                        console.log("Sim, a categoria é cultura")
+                        valorNovaCategoria = 3;
+                        console.log(valorNovaCategoria);
+                    }
+                    if(valorNovaCategoria == economia){
+                        console.log("Sim, a categoria é economia");
+                        valorNovaCategoria = 4;
+                    }
+                    if(valorNovaCategoria == esportes){
+                        console.log("Sim, a categoria é esportes");
+                        valorNovaCategoria = 2;
+                    }
+                    if(valorNovaCategoria == obtuario){
+                        console.log("Sim, a categoria é esportes");
+                        valorNovaCategoria = 5;
+                    }
+                    if(valorNovaCategoria == politica){
+                        console.log("Sim, a categoria é politica");
+                        valorNovaCategoria = 1;
+                    }
+                let valorNovoTitulo = novoTitulo.value;
+                let valorNovoSubtitulo = novoSubtitulo.value;
+                let valorNovoConteudo = novoConteudo.value;
+                console.log(valorNovaCategoria, valorNovoTitulo, valorNovoSubtitulo, valorNovoConteudo, idBotaoClicado);
+                event.preventDefault();
+
+                let dadosEditar = {
+                    id: idBotaoClicado,
+                    titulo: valorNovoTitulo,
+                    subtitulo: valorNovoSubtitulo,
+                    conteudo: valorNovoConteudo,
+                    idCategoria: valorNovaCategoria,
+                }
+                console.log(dadosEditar);
+
+                urlEditar = "https://tiagoifsp.ddns.net/noticias/noticias/editar.php";
+                $.ajax({
+                    url: urlEditar,
+                    method: "POST",
+                    dataType: "json",
+                    data: dadosEditar,
+                    success: function(dados){
+                        console.log("Deu certo Editar");
+                        alert("Você editou a notícia!")
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function(){
+            let tagCadastrar = document.querySelector("#cadastrar");
+            //corpoCentral = document.querySelector("#centro");
+            //console.log(corpoCentral);
+            tagCadastrar.addEventListener("click", function(event){
+                console.log("voce clicou em Cadastrar");
+                //corpoCentral = document.querySelector("#centro");
+                //console.log(corpoCentral);
+                let cabeçalhoCadastar = $("<h3>").text("Cadastrar Notícia:");
+                let formulario = "<form id='form-editar'><label for='editarProduto'>Categoria:</label><select class='form-control' id='categoriaNova'><option>Cultura</option><option>Economia</option><option>Esportes</option><option>Obituario</option><option>Politica</option></select><label for='editarProduto'>Título:</label><input type='text' class='form-control' id='tituloNovo' placeholder='Novo Titulo'><label for='editarProduto'>Subtitulo:</label><input type='text' class='form-control' id='subtituloNovo' placeholder='Novo Subtitulo'><label for='editarProduto'>Conteído:</label><textarea class='form-control' id='conteudoNovo' rows='3' placeholder='Novo Conteudo'></textarea><button class='btn btn-primary'>Cadastrar</button></form>";
+                let conteudoCadastrar = $("<div>");
+                conteudoCadastrar.append(cabeçalhoCadastar);
+                conteudoCadastrar.append(formulario)
+                $("#centro").html(conteudoCadastrar);
+
+                let cultura = "Cultura";
+                let economia = "Economia";
+                let esportes = "Esportes";
+                let obtuario = "Obituario";
+                let politica = "Politica";
+                let novaCategoria = document.querySelector("#categoriaNova");
+                let novoTitulo = document.querySelector("#tituloNovo");
+                let novoSubtitulo = document.querySelector("#subtituloNovo");
+                let novoConteudo = document.querySelector("#conteudoNovo");
+                let formularioCadastrar = document.querySelector("#form-editar");
+                console.log(novaCategoria, novoTitulo, novoSubtitulo, novoConteudo, formularioCadastrar);
+
+                formularioCadastrar.addEventListener("submit", function(event){
+                    let valorNovaCategoria = novaCategoria.value;
+                    if(valorNovaCategoria == cultura){
+                        console.log("Sim, a categoria é cultura")
+                        valorNovaCategoria = 3;
+                        console.log(valorNovaCategoria);
+                    }
+                    if(valorNovaCategoria == economia){
+                        console.log("Sim, a categoria é economia");
+                        valorNovaCategoria = 4;
+                    }
+                    if(valorNovaCategoria == esportes){
+                        console.log("Sim, a categoria é esportes");
+                        valorNovaCategoria = 2;
+                    }
+                    if(valorNovaCategoria == obtuario){
+                        console.log("Sim, a categoria é esportes");
+                        valorNovaCategoria = 5;
+                    }
+                    if(valorNovaCategoria == politica){
+                        console.log("Sim, a categoria é politica");
+                        valorNovaCategoria = 1;
+                    }
+                    let valorNovoTitulo = novoTitulo.value;
+                    let valorNovoSubtitulo = novoSubtitulo.value;
+                    let valorNovoConteudo = novoConteudo.value;
+                    console.log(valorNovaCategoria, valorNovoTitulo, valorNovoSubtitulo, valorNovoConteudo);
+                    event.preventDefault();
+
+                    let dadosCadastrar = {
+                        titulo: valorNovoTitulo,
+                        subtitulo: valorNovoSubtitulo,
+                        conteudo: valorNovoConteudo,
+                        idCategoria: valorNovaCategoria,
+                    };
+                    console.log(dadosCadastrar);
+
+                    urlCadastrar = "https://tiagoifsp.ddns.net/noticias/noticias/cadastrar.php"
+                    $.ajax({
+                        url: urlCadastrar,
+                        method: "POST",
+                        dataType: "json",
+                        data: dadosCadastrar,
+                        success: function(dados){
+                            console.log("Voce conseguiu Cadastrar uma noticia");
+                            alert("Voce conseguiu Cadastrar uma noticia");
+                        }
+                    });
+                });
+
+
+
+                /*urlCadastrar = "https://tiagoifsp.ddns.net/noticias/categorias/listar.php";
+                $.ajax({
+                    url: urlCadastrar,
+                    method: "GET",
+                    data: "json",
+                    success: function(dados){
+                        console.log("Deu certo carregar o cadastrar")
+                    }
+                });*/
+            });
+        });
+
+        $(document).ready(function(){
+            let url = "https://tiagoifsp.ddns.net/noticias/categorias/listar.php"
+            $.ajax({
+                url: url,
+                method: "GET",
+                data: "json",
+                success: function(dados){
+                    for(i=0;i<dados.length;i++){
+                        console.log(dados[i]);
+                        let ul = $("<ul>");
+                        //let categorias = $("<li>").html('<li id="linha_'+i+'">'+ dados[i].nome +'</li>')
+                        let categorias = '<li id="'+i+'">'+ dados[i].nome +'</li>'
+                        console.log(categorias);
+                        ul.append(categorias);
+                        $("#lado-esquerdo").append(ul);
+                    }
+
+                    categoriaCultura = document.getElementById("0");
+                    console.log(categoriaCultura);
+                    categoriaCultura.addEventListener("click", function(event){
+                        console.log("Voce clicou na opcao Cultura");
+                        let urlCultura = "https://tiagoifsp.ddns.net/noticias/noticias/listar.php/?id=3";
+                        
+                        $.ajax({
+                            url: urlCultura,
+                            method: "GET",
+                            data: "json",
+                            success: function(dados){
+                                console.log("Voce acessou as Noticias Cultura");
+                                corpoCentral = $("#centro");
+                                let article = $("<article>");
+                                for(i=0;i<dados.length;i++){
+                                    let tituloNoticia = $("<h3>").html(dados[i].titulo);
+                                    article.append(tituloNoticia);
+                                    let subtituloNoticia = $("<h6>").html(dados[i].subtitulo);
+                                    article.append(subtituloNoticia);
+                                    let conteudoNoticia = $("<p>").html(dados[i].conteudo);
+                                    article.append(conteudoNoticia);
+                                    let noticiaEditavel = dados[i].editavel;
+                                    console.log(noticiaEditavel);
+                                    if(noticiaEditavel == 1){
+                                        console.log("Essa noticia é editavel");
+                                        var botaoDeletar = '<button type="button" class="btn btn-danger" id="'+dados[i].id+'" onclick="clicouDeletar(this.id)">Excluir</button>';
+                                        console.log(botaoDeletar);
+                                        article.append(botaoDeletar);
+                                        var botaoEditar = '<button type="button" class="btn btn-success" id="'+dados[i].id+'" onclick="clicouEditar(this.id)">Editar</button>';
+                                        article.append(botaoEditar);
+                                    }
+                                    let linha = $("<hr>");
+                                    article.append(linha);
+                                }
+                                corpoCentral.html(article);
+                            }
+                        });
+                    });
+
+                    categoriaEconomia = document.getElementById("1");
+                    console.log(categoriaEconomia);
+                    categoriaEconomia.addEventListener("click", function(event){
+                        console.log("Voce clicou na opcao Economia");
+                        let urlEconomia = "https://tiagoifsp.ddns.net/noticias/noticias/listar.php/?id=4";
+
+                        $.ajax({
+                            url: urlEconomia,
+                            method: "GET",
+                            data: "json",
+                            success: function(dados){
+                                console.log("Voce acessou as Noticias de Economia");
+                                corpoCentral = $("#centro");
+                                let article = $("<article>");
+                                for(i=0;i<dados.length;i++){
+                                    let tituloNoticia = $("<h3>").html(dados[i].titulo);
+                                    article.append(tituloNoticia);
+                                    let subtituloNoticia = $("<h6>").html(dados[i].subtitulo);
+                                    article.append(subtituloNoticia);
+                                    let conteudoNoticia = $("<p>").html(dados[i].conteudo);
+                                    article.append(conteudoNoticia);
+                                    let noticiaEditavel = dados[i].editavel;
+                                    console.log(noticiaEditavel);
+                                    if(noticiaEditavel == 1){
+                                        console.log("Essa noticia é editavel");
+                                        var botaoDeletar = '<button type="button" class="btn btn-danger" id="'+dados[i].id+'" onclick="clicouDeletar(this.id)">Excluir</button>';
+                                        console.log(botaoDeletar);
+                                        article.append(botaoDeletar);
+                                        var botaoEditar = '<button type="button" class="btn btn-success" id="'+dados[i].id+'" onclick="clicouEditar(this.id)">Editar</button>';
+                                        article.append(botaoEditar);
+                                    }
+                                    let linha = $("<hr>");
+                                    article.append(linha);
+                                }
+                                corpoCentral.html(article);
+                            }
+                        });
+                    });
+
+                    categoriaEsportes = document.getElementById("2");
+                    console.log(categoriaEsportes);
+                    categoriaEsportes.addEventListener("click", function(event){
+                        console.log("Voce clicou na opcao Esportes");
+                        let urlEsportes = "https://tiagoifsp.ddns.net/noticias/noticias/listar.php/?id=2";
+
+                        $.ajax({
+                            url: urlEsportes,
+                            method: "GET",
+                            data: "json",
+                            success: function(dados){
+                                console.log("Voce acessou as Noticias Cultura");
+                                corpoCentral = $("#centro");
+                                let article = $("<article>");
+                                for(i=0;i<dados.length;i++){
+                                    let tituloNoticia = $("<h3>").html(dados[i].titulo);
+                                    article.append(tituloNoticia);
+                                    let subtituloNoticia = $("<h6>").html(dados[i].subtitulo);
+                                    article.append(subtituloNoticia);
+                                    let conteudoNoticia = $("<p>").html(dados[i].conteudo);
+                                    article.append(conteudoNoticia);
+                                    let noticiaEditavel = dados[i].editavel;
+                                    console.log(noticiaEditavel);
+                                    if(noticiaEditavel == 1){
+                                        console.log("Essa noticia é editavel");
+                                        var botaoDeletar = '<button type="button" class="btn btn-danger" id="'+dados[i].id+'" onclick="clicouDeletar(this.id)">Excluir</button>';
+                                        console.log(botaoDeletar);
+                                        article.append(botaoDeletar);
+                                        var botaoEditar = '<button type="button" class="btn btn-success" id="'+dados[i].id+'" onclick="clicouEditar(this.id)">Editar</button>';
+                                        article.append(botaoEditar);
+                                    }
+                                    let linha = $("<hr>");
+                                    article.append(linha);
+                                }
+                                corpoCentral.html(article);
+                            }
+                        });
+                    });
+
+                    categoriaObtuario = document.getElementById("3");
+                    console.log(categoriaObtuario);
+                    categoriaObtuario.addEventListener("click", function(event){
+                        console.log("Voce clicou na opcao Obtuario");
+                        urlObtuario = "https://tiagoifsp.ddns.net/noticias/noticias/listar.php/?id=5";
+
+                        $.ajax({
+                            url: urlObtuario,
+                            method: "GET",
+                            data: "json",
+                            success: function(dados){
+                                console.log("Voce acessou as Noticias Cultura");
+                                corpoCentral = $("#centro");
+                                let article = $("<article>");
+                                for(i=0;i<dados.length;i++){
+                                    let tituloNoticia = $("<h3>").html(dados[i].titulo);
+                                    article.append(tituloNoticia);
+                                    let subtituloNoticia = $("<h6>").html(dados[i].subtitulo);
+                                    article.append(subtituloNoticia);
+                                    let conteudoNoticia = $("<p>").html(dados[i].conteudo);
+                                    article.append(conteudoNoticia);
+                                    let noticiaEditavel = dados[i].editavel;
+                                    console.log(noticiaEditavel);
+                                    if(noticiaEditavel == 1){
+                                        console.log("Essa noticia é editavel");
+                                        var botaoDeletar = '<button type="button" class="btn btn-danger" id="'+dados[i].id+'" onclick="clicouDeletar(this.id)">Excluir</button>';
+                                        console.log(botaoDeletar);
+                                        article.append(botaoDeletar);
+                                        var botaoEditar = '<button type="button" class="btn btn-success" id="'+dados[i].id+'" onclick="clicouEditar(this.id)">Editar</button>';
+                                        article.append(botaoEditar);
+                                    }
+                                    let linha = $("<hr>");
+                                    article.append(linha);
+                                }
+                                corpoCentral.html(article);
+                            }
+                        });
+                    });
+
+                    categoriaPolitica = document.getElementById("4");
+                    console.log(categoriaPolitica);
+                    categoriaPolitica.addEventListener("click", function(event){
+                        console.log("Voce clicou na opcao Politica");
+                        urlPolitica = "https://tiagoifsp.ddns.net/noticias/noticias/listar.php/?id=1";
+
+                        $.ajax({
+                            url: urlPolitica,
+                            method: "GET",
+                            data: "json",
+                            success: function(dados){
+                                console.log("Voce acessou as Noticias Cultura");
+                                corpoCentral = $("#centro");
+                                let article = $("<article>");
+                                for(i=0;i<dados.length;i++){
+                                    let tituloNoticia = $("<h3>").html(dados[i].titulo);
+                                    article.append(tituloNoticia);
+                                    let subtituloNoticia = $("<h6>").html(dados[i].subtitulo);
+                                    article.append(subtituloNoticia);
+                                    let conteudoNoticia = $("<p>").html(dados[i].conteudo);
+                                    article.append(conteudoNoticia);
+                                    let noticiaEditavel = dados[i].editavel;
+                                    console.log(noticiaEditavel);
+                                    if(noticiaEditavel == 1){
+                                        console.log("Essa noticia é editavel");
+                                        var botaoDeletar = '<button type="button" class="btn btn-danger" id="'+dados[i].id+'" onclick="clicouDeletar(this.id)">Excluir</button>';
+                                        console.log(botaoDeletar);
+                                        article.append(botaoDeletar);
+                                        var botaoEditar = '<button type="button" class="btn btn-success" id="'+dados[i].id+'" onclick="clicouEditar(this.id)">Editar</button>';
+                                        article.append(botaoEditar);
+                                    }
+                                    let linha = $("<hr>");
+                                    article.append(linha);
+                                }
+                                corpoCentral.html(article);
+                            }
+                        });
+                    });
+                },
+            });
+        });
+    </script>
+</head>
+
+<body>
+      <div class="container">
+        <div class="row">
+          <div class="col-3" id="lado-esquerdo">
+              <h3>Menu:</h3>
+              <ul>
+                <li id="cadastrar">Cadastrar</li>
+              </ul>
+          </div>
+          <div class="col-6" id="centro">
+
+          </div>
+          <div class="col-3" id="lado-direito">
+          </div>
+        </div>
+      </div>
+</body>
+
+</html>
