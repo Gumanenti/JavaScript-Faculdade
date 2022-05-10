@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Jogo de Campo Minado</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+	</script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+    rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+    crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" 
+    integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" 
+    crossorigin="anonymous">
+    <link rel="stylesheet" href="estilo.css">
+	<style>
+        body{
+            background-image: url(./img/fundo1.png);
+        }
+        main, button{
+            position: relative;
+            left: 250px;
+        }
+        h1, h2{
+            position: relative;
+            right: -180px;
+        }        
+        .fechado {
+            background-color: lightgrey;
+        }
+        
+        .aberto {
+            background-color: rgb(255, 100, 255);
+            margin-top: 1px;
+        }
+        
+        .fechado:hover:not(.marcado) {
+            background-color: rgb(170, 170, 170);
+        }
+        
+        .mina {
+            background-color: black;
+        }
+        
+        .marcado {
+            background-color: rgb(165, 0, 0);
+        }
+        
+        div {
+            /*display: flex;*/
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            font-size: 150%;
+        }
+        .navbar .navbar-brand{
+            color: rgb(0, 17, 255);
+            font-size: 30px;
+            font-weight:bold;
+            }
+        .navbar .navbar-nav .nav-link{
+            color: rgb(0, 38, 255);
+            font-weight:bold;
+            font-size: 30px;
+            }
+        .navbar .btn{
+            background-color: darkorange;
+            color:black;
+            font-weight: bold;
+            }
+        #campo{
+            box-shadow: 0 0 1em gold;
+            }
+
+    </style>
+<script>
+$(document).ready(function(){
+    $(document).on("click", "button", function(event){
+
+    var duracao = 60 * 1; // Converter para segundos e 
+    exibir = document.querySelector('#timer'); // selecionando o timer
+    cronometro(duracao, exibir); // iniciando o timer
+
+//1º função e para passar em todas as posições do campo da matriz e inicializa com valores.
+//Se tiver uma mina coloca asterisco *
+//Senão coloca 0
+function campo(cont_linhas, cont_colunas, minas){
+var linhas = [];
+
+/*Esse primeiro laço de iteração, faz que qdo for uma mina coloca * e não 
+coloca um 0*/
+for(var i = 0; i < cont_linhas; i++){
+    linhas[i] = [];
+
+    for(var j = 0; j < cont_colunas; j++){
+        if(minas.map(x => JSON.stringify(x)).includes("["+i+ ","+j+"]")){//percorre a matriz e verifica se tem mina(*), transforma o numeros em strings e inclui na matriz 
+        linhas[i][j] = "*";// se estiver mina coloca asterico 
+        }else{
+            linhas[i][j] = 0;//senão coloca 0
+            }        
+        }
+    }
+
+    //Esse laço de iteração passará por todas as linhas e todas as colunas e vai ver todas as posições de cada um e contará qtas minas tem.
+    //Para ver qtas minas tem em volta
+    for(var i = 0; i < cont_linhas; i++){
+        for(var j = 0; j < cont_colunas; j++){
+            //neste laço ele verifica na matriz onde estiver bomba proxima ele soma 1 ou nos campo mas distantes ele subtrai 1.
+            //a palavra undefined é para isso  
+            if(linhas[i][j] != "*"){
+                if(linhas[i - 1] !== undefined && linhas[i - 1][j - 1] === "*") linhas[i][j]++;//*** (i-1,j-1) (i-1, j)(i-1,j-1)
+                if(linhas[i - 1] !== undefined && linhas[i - 1][j    ] === "*") linhas[i][j]++;//*?* (i,  j-1) ( ?    )(i  ,j-1)
+                if(linhas[i - 1] !== undefined && linhas[i - 1][j + 1] === "*") linhas[i][j]++;//*** (i+1,j-1) (i+1, j)(i+1,j+1)
+
+                if(linhas[i][i - 1]=== "*") linhas[i][j]++;//*** 
+                if(linhas[j][i + 1]=== "*") linhas[i][j]++;//***
+
+                if(linhas[i + 1] !== undefined && linhas[i + 1][j - 1] === "*") linhas[i][j]++;//***
+                if(linhas[i + 1] !== undefined && linhas[i + 1][j    ] === "*") linhas[i][j]++;//*?* 
+                if(linhas[i + 1] !== undefined && linhas[i + 1][j + 1] === "*") linhas[i][j]++;//***
+        }
+    }
+}
+    return linhas;
+
+};
+//2º função torna o jogo clicavel e com um laço de iteração criar um span para cobrir os numeros
+
+function clicarJogo(e){
+
+    if(e.target.textContent === "*"){
+    
+        for(element of document.querySelectorAll("div")){
+            element.setAttribute("class", "");
+        }
+        alert("Bomba")
+        //InserirImagem(url);
+        window.location.reload();
+
+    }else{
+        e.target.childNodes[0].setAttribute("class", "");
+    }
+    
+}
+//3º função coloca as minas como aleatorias
+function minasAleatorias(tamanho, colunas, linhas){
+    minas = [];
+    for(var x = 0; x < tamanho; x++){
+        var posicaoDasLinha = parseInt(Math.random() * linhas);
+        var posicaoDasColunas = parseInt(Math.random() * colunas);
+        minas.push([posicaoDasLinha, posicaoDasColunas]);
+    }
+    return minas
+    
+}
+    var minas = minasAleatorias(12, 10, 10);
+    criarTabela(campo(10, 8, minas));
+//3º função para criar a tabela
+function criarTabela(linhas){
+    var tabela = document.getElementById("campo");//criei uma tabela
+    for(var linha of linhas) {//laço de iteração para percorrer as linhas
+        var tr = document.createElement("tr"); //Apos criar as linhas irá acrescentar um tr
+        tabela.appendChild(tr)// os trs será acrescentados na tabela
+        tabela.style.marginLeft = "430px"
+        for(var coluna of linha){//Laço de iteração para percorrer as colunas
+            var td = document.createElement("td");// Nas colunas irá criar um td
+            var div = document.createElement("div");// crie um span para cobrir os tds
+            div.textContent = coluna;
+			div.style.justifyContent = "center";
+			div.style.alignItems = "center";
+			div.style.display = "flex";
+			div.style.width = "50px";
+			div.style.height = "50px";
+			div.style.color = "rgb(255, 100, 255)";
+			//div.style.font = "hidden";
+            div.setAttribute("class", "aberto"); // atribui uma class campo2
+			div.addEventListener("click", function(){
+                console.log("voce clicou na div");
+                this.style.color = "black";
+			});
+            div.addEventListener("mousedown", function(){
+                console.log("Voce clicou com o botao direito");
+                this.setAttribute("class", "marcado");
+                this.style.color = "rgb(165, 0, 0)";
+            });
+            td.appendChild(div);
+            tr.appendChild(td)
+            td.addEventListener("click", clicarJogo)
+        }
+    }
+}
+
+function cronometro(duracao, exibir) {
+    var timer = duracao, minutos, segundos;
+    setInterval(function () {
+        minutos = parseInt(timer / 60, 10);
+        segundos = parseInt(timer % 60, 10);
+        minutos = minutos < 10 ? "0" + minutos : minutos;
+        segundos = segundos < 10 ? "0" + segundos : segundos;
+        exibir.textContent = minutos + ":" + segundos;
+        if (--timer < 0) {//incrementa crescente ou decrescente
+            timer = duracao;
+            alert("Você perdeu, tente novamente!!!!")
+            window.location.reload();
+            
+        }
+    }, 1000);
+}
+
+});
+
+});
+</script>
+	
+	
+</head>
+<body >
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <img class="logo" src="./img/logo.png" alt="">
+            <div class="container-fluid">
+              
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5500/index.html">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Menu
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="#">Jogos</a></li>
+                      <li><a class="dropdown-item" href="#">Cadastrar usuário</a></li>                      
+                    </ul>
+                  </li>
+                  
+                </ul>
+               
+              </div>
+            </div>
+          </nav>
+        </header> 
+    <main>
+        
+        <h1>Campo Minado</h1>
+        <h2>Você terá 1 minuto para vencer!!!</h2>
+        <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">
+            Jogar
+          </button>
+        <h2 >Tempo: <span id="timer">00:00</span></h2>
+        
+    </main>
+	
+	
+    
+	<table id="campo">
+		
+	</table>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"></script>
+</body>
+</html>
